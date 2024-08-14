@@ -1,0 +1,71 @@
+export interface IAccount {
+  accountNumber: string;
+  accountId: string;
+  deviceId: string;
+  bankName: string;
+  bankLogo: string;
+  bankCode: string;
+  loginDetails: {
+    loginID: string;
+    password: string;
+  };
+  publicKey: string;
+  sessionId: string;
+  sessionExp: Date;
+  bvn: string;
+  email: string;
+  userReference: string;
+  phoneNumber: string;
+  isCompleted: boolean;
+  fullName: string;
+  balance: number;
+  dob: any;
+  gender: string;
+  maritalStatus: string;
+  accountStatus: string;
+  showBalance: boolean;
+  isoCurrencyCode: string;
+  currency: string;
+  canTransferFrom: string;
+  canTransferTo: string;
+  accountType: string;
+  nin: string;
+  statementDate: Date;
+  statementLength: number;
+  orgId: string;
+  country: string;
+  transactionHistoryFilePath: string;
+  lastLogin: Date;
+  customerAccountId: string;
+  BwInstance: string;
+  csrfToken: string;
+  accessId: string;
+}
+
+export interface IBvn {
+  bvn: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  gender: string;
+  dateOfBirth: Date;
+  base64Image: string;
+  email: string;
+  phoneNumber1: string;
+  enrollmentBank: string;
+  registrationDate: Date;
+  enrollmentBranch: string;
+  levelOfAccount: string;
+  lgaOfOrigin: string;
+  lgaOfResidence: string;
+  maritalStatus: string;
+  nin: string;
+  nameOnCard: string;
+  nationality: string;
+  phoneNumber2: string;
+  residentialAddress: string;
+  stateOfOrigin: string;
+  stateOfResidence: string;
+  title: string;
+  watchListed: string;
+}

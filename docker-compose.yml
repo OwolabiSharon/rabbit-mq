@@ -1,0 +1,59 @@
+version: '3'
+services:
+  #code services
+  api:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/api_gateway:${GIT_TAG}
+    env_file:
+      - .env.production
+    depends_on:
+      - auth
+      - connect
+      - kyc
+      - mail
+      - payment
+    logging:
+      driver: 'json-file'
+  auth:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/auth:${GIT_TAG}
+    env_file:
+      - .env.production
+    logging:
+      driver: 'json-file'
+  connect:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/connect:${GIT_TAG}
+    env_file:
+      - .env.production
+  insight:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/insight:${GIT_TAG}
+    env_file:
+      - .env.production
+    logging:
+      driver: 'json-file'
+  kyc:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/kyc:${GIT_TAG}
+    env_file:
+      - .env.production
+    logging:
+      driver: 'json-file'
+  mail:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/mail:${GIT_TAG}
+    env_file:
+      - .env.production
+    logging:
+      driver: 'json-file'
+  payment:
+    image: 973920270561.dkr.ecr.us-east-1.amazonaws.com/payment:${GIT_TAG}
+    env_file:
+      - .env.production
+    logging:
+      driver: 'json-file'
+  nginx_webserver:
+    image: nginx:latest
+    ports:
+      - '80:80'
+      - '443:443'
+      #cert files are set on server
+    volumes:
+      - ./.nginx/web:/var/www/html
+      - ./.nginx/conf.d:/etc/nginx/conf.d
+      - ~/.nginx/ssl:/etc/nginx/ssl

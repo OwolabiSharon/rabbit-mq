@@ -1,0 +1,45 @@
+FROM node:alpine As development
+
+RUN apk update \
+  && apk --no-cache --update add build-base 
+
+RUN apk add --no-cache python3 py3-pip
+RUN apk update \
+  && apk upgrade \
+  && apk add ca-certificates \
+  && update-ca-certificates \
+  && apk add --update coreutils && rm -rf /var/cache/apk/*   \ 
+  && apk add --update openjdk17-jre \
+  && apk add --no-cache nss \
+  && rm -rf /var/cache/apk/* 
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+# RUN rm -rf node_modules -f
+
+RUN npm cache clean --force
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build connect
+
+FROM node:alpine as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY . .
+
+COPY --from=development /usr/src/app/dist ./dist
+
+CMD ["node", "dist/apps/connect/main"]

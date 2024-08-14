@@ -1,0 +1,16 @@
+export const AccessHeaders = (BwInstance, bwSessionID) => ({
+  Connection: 'keep-alive',
+  'sec-ch-ua': '"Chromium";v="97", " Not;A Brand";v="99"',
+  Accept: '*/*',
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'sec-ch-ua-mobile': '?0',
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
+  'sec-ch-ua-platform': '"Linux"',
+  Origin: 'https://ibank.accessbankplc.com',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Dest': 'empty',
+  Referer: 'https://ibank.accessbankplc.com/RetailBank/',
+  'Accept-Language': 'en-US,en;q=0.9',
+  Cookie: `testcookie; bwIsPortal=Y; bwAuthenticated=0; bwIsPortal=Y; bwInstanceNo=${BwInstance}; bwSessionID=${bwSessionID}; BIGipServerACC_BANKWORLD_POOL_HTTPS=3879512256.47873.0000`,
+});

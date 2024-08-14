@@ -1,0 +1,7 @@
+version: 1
+task_definition:
+  ecs_network_mode: bridge
+  efs_volumes:
+    - name: postgresql_master_data
+      filesystem_id: fs-0120106699045fa43
+      transit_encryption: ENABLED

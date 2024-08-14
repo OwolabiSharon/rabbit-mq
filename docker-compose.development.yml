@@ -1,0 +1,162 @@
+version: '3'
+services:
+  #code services
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_api
+      target: development
+    command: npm run start:dev api
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - connect
+      - auth
+      - kyc
+      - rabbitmq
+      - mail
+      - payment
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+  auth:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_auth
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '5000:5000'
+  insight:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_insight
+      target: development
+    command: npm run start:dev insight
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    ports:
+      - '3003:3003'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  connect:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_connect
+      target: development
+    command: npm --node-options=--insecure-http-parser run start:dev connect
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  kyc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_kyc
+      target: development
+    command: npm run start:dev kyc
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  mail:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_mail
+      target: development
+    command: npm run start:dev mail
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  payment:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_payment
+      target: development
+    command: npm run start:dev payment
+    env_file:
+      - ./.env
+    depends_on:
+      - postgresql-master
+      - postgresql-slave
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  #external services
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672'
+  postgresql-master:
+    image: docker.io/bitnami/postgresql:14
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_master_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=password
+      - POSTGRESQL_DATABASE=root_db
+      - ALLOW_EMPTY_PASSWORD=yes
+  postgresql-slave:
+    image: docker.io/bitnami/postgresql:14
+    depends_on:
+      - postgresql-master
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=postgresql-master
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+  nginx_webserver:
+    image: nginx:latest
+    ports:
+      - '4000:80'
+      - '4005:443'
+      #cert files are set on server
+    volumes:
+      - ./.nginx/web:/var/www/html
+      - ./.nginx/dev_conf.d:/etc/nginx/conf.d
+volumes:
+  postgresql_master_data:
+    driver: local
